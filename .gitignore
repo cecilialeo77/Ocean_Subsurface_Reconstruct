@@ -1,0 +1,98 @@
+# Track source code, tests, configuration, and documentation.
+# Keep datasets and generated experiment artifacts local.
+
+# Dataset directories (root-level, preserving src/**/data.py)
+/data/
+/dataset/
+/datasets/
+/raw_data/
+/processed_data/
+/surface/
+/subsurface/
+
+# Scientific data and reconstruction outputs
+*.nc
+*.nc4
+*.netcdf
+*.h5
+*.hdf5
+*.hdf
+*.npy
+*.npz
+*.mat
+*.zarr/
+*.parquet
+*.pkl
+*.pickle
+
+# Generated training, evaluation, and prediction directories
+outputs/
+output/
+results/
+checkpoints/
+weights/
+artifacts/
+
+# Model weights and exported models
+*.pt
+*.pth
+*.pth.tar
+*.ckpt
+*.safetensors
+*.onnx
+*.pb
+*.tflite
+
+# Training logs and experiment trackers
+logs/
+log/
+runs/
+wandb/
+mlruns/
+lightning_logs/
+tensorboard/
+*.log
+*.log.*
+events.out.tfevents.*
+history.json
+initialization.json
+metrics_*.json
+metrics_*.csv
+metrics_*.tsv
+
+# Python bytecode and tooling caches
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.cache/
+.ipynb_checkpoints/
+.coverage
+.coverage.*
+htmlcov/
+coverage.xml
+
+# Virtual environments and generated packaging files
+.venv/
+venv/
+env/
+ENV/
+build/
+dist/
+*.egg-info/
+*.egg
+
+# Local environment variables and editor/OS files
+.env
+.env.*
+!.env.example
+!.env.template
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+Desktop.ini
+*.swp
+*.swo
+*~

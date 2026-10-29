@@ -1,0 +1,188 @@
+# 分组学习率微调：从同一个IPRC best.pt初始化，全网络更新。
+# 两阶段实验：架构与三项损失保持一致，标准化参数共享。
+
+data:
+
+  surface_path: Z:/surface/surface_input/input_8ch_1993_2024.nc
+
+  surface_norm_path: Z:/surface/surface_input/surface_norm_2005_2018.json
+
+  label_path: Z:/subsurface/GLORYS_processed/GLORYS_step2_standardized/combined_nc/glorys_temperature_standardized_1993_2024_27layers_0.25deg.nc
+
+  label_norm_path: Z:/subsurface/GLORYS_processed/shared_label_norm_stats/shared_temperature_label_norm_train_only.json
+
+  domain_mask_path: Z:/surface/quarter_degree/depth_valid_ocean_masks.nc
+
+  surface_var: input
+
+  label_var: temperature
+
+  mask_var: valid_label_mask
+
+  domain_mask_var: valid_ocean_mask
+
+  surface_mask_depth_m: 0.0
+
+  time_text_var: time_text
+
+  train_range:
+
+  - 2005-01
+
+  - 2018-12
+
+  val_range:
+
+  - 2019-01
+
+  - 2020-12
+
+  test_range:
+
+  - 2021-01
+
+  - 2024-12
+
+model:
+
+  image_size:
+
+  - 512
+
+  - 1440
+
+  in_channels: 11
+
+  out_depths: 27
+
+  patch_size: 4
+
+  embed_dim: 96
+
+  encoder_depths:
+
+  - 2
+
+  - 2
+
+  - 6
+
+  - 2
+
+  num_heads:
+
+  - 3
+
+  - 6
+
+  - 12
+
+  - 24
+
+  decoder_depths:
+
+  - 6
+
+  - 2
+
+  - 2
+
+  window_size:
+
+  - 8
+
+  - 9
+
+  shift_size:
+
+  - 4
+
+  - 4
+
+  mlp_ratio: 4.0
+
+  qkv_bias: true
+
+  drop_rate: 0.0
+
+  attention_drop_rate: 0.0
+
+  drop_path_rate: 0.2
+
+  norm_eps: 1.0e-05
+
+  use_checkpoint: true
+
+  reconstruction_head: periodic_bilinear_geo_refine
+
+  moe:
+
+    enabled: true
+
+    width: 16
+
+    prior_strength: 0.5
+
+    local_gradient_weight: 0.5
+
+loss:
+
+  use_vertical_gradient: true
+
+  vertical_weight: 0.005
+
+  vertical_reference_distance_m: 100.0
+
+  use_vertical_gradient_transport: true
+
+  vertical_transport_weight: 0.4
+
+  vertical_transport_reference_distance_m: 100.0
+
+training:
+
+  output_dir: outputs/glorys_finetune_currentmonth_grouped_lr
+
+  epochs: 200
+
+  batch_size: 1
+
+  learning_rate: 5.0e-05
+
+  weight_decay: 0.0001
+
+  scheduler_factor: 0.5
+
+  scheduler_patience: 3
+
+  min_lr: 1.0e-06
+
+  num_workers: 0
+
+  device: auto
+
+  amp: true
+
+  seed: 2026
+
+  deterministic: true
+
+  grad_clip_norm: 1.0
+
+  selection_metric: macro_nrmse_depth
+
+  save_every: 5
+
+  val_every: 4
+
+  stage: glorys_finetune
+
+
+  # 存在parameter_groups时，各组learning_rate和min_lr覆盖上面的单组默认值。
+  parameter_groups:
+    encoder:
+      learning_rate: 1.0e-05
+      min_lr: 2.0e-07
+    decoder_head_moe:
+      learning_rate: 5.0e-05
+      min_lr: 1.0e-06
